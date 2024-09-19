@@ -1,0 +1,27 @@
+---
+- name: Change insights tags
+  hosts: all
+  become: true
+
+  vars:
+    tag_to_remove: "purpose: demo"
+    tag_to_add: ""
+
+  tasks:
+    - name: Remove tag from /etc/insights-client/tags.yaml
+      ansible.builtin.lineinfile:
+        path: /etc/insights-client/tags.yaml
+        line: "{{ tag_to_remove }}"
+        state: absent
+      when: tag_to_remove is defined
+
+    - name: Add tag to /etc/insights-client/tags.yaml
+      ansible.builtin.lineinfile:
+        path: /etc/insights-client/tags.yaml
+        line: "{{ tag_to_add }}"
+        state: present
+      when: tag_to_add is defined
+
+    - name: Resend info to Insights
+      ansible.builtin.command: insights-client
+      changed_when: false
