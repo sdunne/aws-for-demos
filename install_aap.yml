@@ -76,4 +76,5 @@
         dest: /home/ec2-user/aap24c.tar
         owner: ec2-user
         group: ec2-user
-        mode: 0777
+        mode: 0664
+
