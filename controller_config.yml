@@ -1,0 +1,76 @@
+- name: Configure controller to build and manage demo ec2 instances
+  hosts: localhost
+
+  environment:
+    CONTROLLER_HOST: "{{ controller_host }}"
+    CONTROLLER_OAUTH_TOKEN: "{{ controller_token }}"
+    CONTROLLER_VERIFY_SSL: false
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+  - name: Create the ec2 machine cred using sdunnerh
+    ansible.controller.credential:
+      name: ec2 instance
+      organization: Default
+      state: present
+      credential_type: Machine
+      inputs:
+        username: ec2-user
+        ssh_key_data: "{{ lookup('file', '/home/runner/.aws/sdunnerh') }}"
+        #ssh_key_data: "{{ ssh_key_for_ec2 }}"
+    changed_when: false
+
+  - name: Add aws credential
+    ansible.controller.credential:
+      name: "aws access and secret keys"
+      description: ""
+      organization: Default
+      credential_type: "Amazon Web Services"
+      state: present
+      update_secrets: false
+      inputs:
+        username: "{{ aws_access_key }}"
+        password: "{{ aws_secret_key }}"
+
+  - name: Add aws inventory source to Demo inventory
+    ansible.controller.inventory_source:
+      name: aws demo open env
+      source: ec2
+      description: aws open environment from demo.rh.com
+      inventory: "Demo Inventory"
+      credential: "aws access and secret keys"
+      overwrite: True
+      update_on_launch: True
+      organization: Default
+
+  - name: Update a single inventory source
+    ansible.controller.inventory_source_update:
+      name: "aws demo open env"
+      inventory: "Demo Inventory"
+      organization: Default
+
+  - name: Add github.com/sdunne project
+    ansible.controller.project:
+      name: "AWS targets setup"
+      description: "Setup controller for AWS targets"
+      organization: "Default"
+      scm_update_on_launch: True
+      scm_update_cache_timeout: 60
+      state: present
+      scm_type: git
+      scm_url: https://github.com/sdunne/aws-for-demos.git
+
+  - name: Create job template to build aw
+    ansible.controller.job_template:
+      name: "AWS / build instance"
+      job_type: run
+      organization: Default
+      inventory: "Demo Inventory"
+      project: "AWS targets setup"
+      playbook: "build_instance.yml"
+      credentials:
+        - "aws access and secret keys"
+      #  - "2nd credential"
+      state: present
