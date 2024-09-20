@@ -34,18 +34,31 @@
       ansible.builtin.debug:
         var: ec2info.instances[0].public_dns_name
 
+    - name: Create var for install inventory
+      ansible.builtin.set_fact:
+        fqdn_of_your_rhel_host: "{{ ec2info.instances[0].private_dns_name }}"
+        # cacheable: yes
+
+    - name: Show new _hosts var
+      ansible.builtin.debug:
+        msg: The host is "{{ fqdn_of_your_rhel_host }}"
+
     - name: Add host inventory hosts file
       ansible.builtin.add_host:
         name: '{{ ec2info.instances[0].public_dns_name }}'
+        groups: aap
         # ansible_private_key_file: /home/sdunne/.ssh/sdunnerh
-        # groups: 
-
+        
 - name: Install containerized AAP
-  hosts: ec2-3-130-92-101.us-east-2.compute.amazonaws.com
+  hosts: aap
   become: true
 
   vars_files:
     - secrets.yml
+
+  vars:
+    bundle_dir: /home/ec2-user/ansible-automation-platform-containerized-setup-bundle-2.4-2-x86_64/bundle
+    fqdn_of_your_rhel_host: "{{ hostvars.localhost.fqdn_of_your_rhel_host }}"
 
   tasks:
     - name: Register to RHSM
@@ -70,11 +83,16 @@
           - git
           - rsync
 
-    - name: Copy tar file to ec2 instance
-      ansible.builtin.copy:
-        src: files/aap24c.tar
-        dest: /home/ec2-user/aap24c.tar
-        owner: ec2-user
-        group: ec2-user
-        mode: 0664
-test
+    - name: Pull installation tar file
+      ansible.builtin.pause:
+        prompt: "Make sure installation tar file is there and un-tarred"
+      # ansible.builtin.get_url:
+
+    # - name: Untar installation file
+    #   ansible.builtin.unarchive:
+    #     src: /home/ec2-user/aap242c.tar
+
+    - name: Populate inventory file
+      ansible.builtin.template:
+        src: files/inventory.j2
+        dest: /home/ec2-user/ansible-automation-platform-containerized-setup-bundle-2.4-2-x86_64/inventory
