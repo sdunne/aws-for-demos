@@ -67,6 +67,11 @@
       scm_type: git
       scm_url: https://github.com/sdunne/aws-for-demos.git
 
+  - name: Update project before creating new job templates
+    ansible.controller.project_update:
+      project: "AWS targets setup"
+      timeout: 10
+
   - name: Create job template to build aws instance
     ansible.controller.job_template:
       name: "AWS / build instance"
@@ -91,7 +96,7 @@
       project: "AWS targets setup"
       playbook: "config_splunk_client.yml"
       credentials:
-        - "aws access and secret keys"
+        - "ec2 instance"
       #  - "2nd credential"
       ask_limit_on_launch: true
       state: present
