@@ -2,7 +2,7 @@
   hosts: localhost
 
   environment:
-    CONTROLLER_HOST: "{{ controller_host }}"
+    CONTROLLER_HOST: ec2-3-130-92-101.us-east-2.compute.amazonaws.com:8443
     CONTROLLER_OAUTH_TOKEN: "{{ controller_token }}"
     CONTROLLER_VERIFY_SSL: false
 
@@ -62,7 +62,7 @@
       scm_type: git
       scm_url: https://github.com/sdunne/aws-for-demos.git
 
-  - name: Create job template to build aw
+  - name: Create job template to build aws instance
     ansible.controller.job_template:
       name: "AWS / build instance"
       job_type: run
@@ -73,4 +73,6 @@
       credentials:
         - "aws access and secret keys"
       #  - "2nd credential"
+      survey_enabled: yes
+      survey_spec: "{{ lookup('file', 'survey-build-instance.json') }}"
       state: present
