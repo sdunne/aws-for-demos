@@ -4,7 +4,7 @@
   
   # vars_files:
   #   - secrets.yml
-  # uncomment to run with ansible-navigator
+  # uncomment above to run with ansible-navigator
 
   # module_defaults:
   #   group/amazon.aws.aws:
@@ -15,7 +15,7 @@
   environment:
     # AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
     # AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
-  # uncomment to run with ansible-navigator
+  # uncomment above to run with ansible-navigator
     AWS_REGION: "{{ aws_region }}"
   
   vars:
