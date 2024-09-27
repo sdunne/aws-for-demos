@@ -1,11 +1,12 @@
 ---
 - name: Initial test of EDA action
-  hosts: ec2-3-130-27-87.us-east-2.compute.amazonaws.com
+  hosts: _hosts
 
   tasks:
     - name: Show event info
       ansible.builtin.debug:
-        var:
-          - eventdata
-          - _hosts
+        var: "{{ item }}"
+      loop:
+        - eventdata
+        - _hosts
 
