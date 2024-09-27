@@ -1,0 +1,15 @@
+---
+- name: Full install on 3 nodes
+  hosts: aapfull
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Register with RHSM
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ rhsm_username }}"
+        password: "{{ rhsm_password }}"
+      become: true
+

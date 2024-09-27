@@ -1,0 +1,18 @@
+---
+- name: Test playbook for EDA
+  hosts: "{{ _hosts }}"
+
+  tasks:
+    - name: Show _hosts
+      ansible.builtin.debug:
+        var: _hosts
+
+    - name: Show eventdata
+      ansible.builtin.debug:
+        var: eventdata.result
+
+    - name: Restart firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+      become: true
