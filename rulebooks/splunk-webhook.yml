@@ -26,5 +26,5 @@
           organization: Default
           job_args:
             extra_vars:
-              eventdata: "{{ event.payload }}"
-              _hosts: "{{ event.payload.result.host }}"
+              # eventdata: "{{ event.payload }}"
+              # _hosts: "{{ event.payload.result.host }}"
