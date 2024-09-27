@@ -1,6 +1,6 @@
 ---
 - name: Initial test of EDA action
-  hosts: _hosts
+  hosts: "{{ _hosts }}"
 
   tasks:
     - name: Show event info
