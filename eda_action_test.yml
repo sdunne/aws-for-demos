@@ -5,4 +5,7 @@
   tasks:
     - name: Show event info
       ansible.builtin.debug:
-        var: eventdata
+        var:
+          - eventdata
+          - _hosts
+
