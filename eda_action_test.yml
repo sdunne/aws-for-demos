@@ -1,6 +1,6 @@
 ---
 - name: Initial test of EDA action
-  hosts: all
+  hosts: localhost
 
   tasks:
     - name: Show event info
