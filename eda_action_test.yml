@@ -1,6 +1,6 @@
 ---
 - name: Initial test of EDA action
-  hosts: localhost
+  hosts: ec2-3-130-27-87.us-east-2.compute.amazonaws.com
 
   tasks:
     - name: Show event info
