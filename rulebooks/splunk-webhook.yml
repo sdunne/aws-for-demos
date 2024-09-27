@@ -1,8 +1,8 @@
 ---
-- name: webhook Source Example
+- name: Webhook source example
   hosts: all
   sources:
-    - name: listen for alerts
+    - name: Listen for alerts
       ansible.eda.webhook:
         host: 0.0.0.0
         port: 5000
@@ -18,11 +18,11 @@
 
   rules:
     - name: Testing Splunk to EDA
-      condition: "SERVICE_STOP" in event.payload.result._raw and "firewalld" in event.payload.result._raw
-      # condition: event.payload is defined
+      # condition: "SERVICE_STOP" in event.payload.result._raw and "firewalld" in event.payload.result._raw
+      condition: event.payload is defined
       action:
         run_job_template:
-          name: Splunk stopped firewalld
+          name: "EDA Action test"
           organization: Default
           job_args:
             extra_vars:
