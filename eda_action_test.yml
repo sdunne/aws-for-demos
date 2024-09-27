@@ -5,8 +5,9 @@
   tasks:
     - name: Show event info
       ansible.builtin.debug:
-        var: "{{ item }}"
-      loop:
-        - eventdata
-        - _hosts
+        var: eventdata
+
+    - name: Show _hosts var
+      ansible.builtin.debug:
+        var: _hosts
 
