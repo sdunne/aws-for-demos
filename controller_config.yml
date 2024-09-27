@@ -112,6 +112,7 @@
       credentials:
         - "ec2 instance"
       #  - "2nd credential"
+      ask_variables_on_launch: true
       state: present
 
   - name: Create Remediate firewall job template
@@ -125,4 +126,5 @@
       credentials:
         - "ec2 instance"
       #  - "2nd credential"
+      ask_variables_on_launch: true
       state: present
