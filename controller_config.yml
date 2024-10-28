@@ -2,7 +2,7 @@
   hosts: localhost
 
   environment:
-    CONTROLLER_HOST: ec2-3-130-92-101.us-east-2.compute.amazonaws.com:8443
+    CONTROLLER_HOST: ec2-3-136-205-2.us-east-2.compute.amazonaws.com:8443
     CONTROLLER_OAUTH_TOKEN: "{{ controller_token }}"
     CONTROLLER_VERIFY_SSL: false
 
