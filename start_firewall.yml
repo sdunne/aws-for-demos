@@ -1,0 +1,17 @@
+---
+- name: Test playbook for EDA
+  hosts: splunk
+  become: true
+
+  tasks:
+    - name: Install firewalld package
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: firewalld service enabled and started
+      ansible.builtin.service:
+        name: firewalld
+        enabled: true
+        state: started
+

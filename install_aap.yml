@@ -45,9 +45,13 @@
 
     - name: Add host inventory hosts file
       ansible.builtin.add_host:
-        name: '{{ ec2info.instances[0].public_dns_name }}'
+        name: "{{ ec2info.instances[0].public_dns_name }}"
         groups: aap
-        # ansible_private_key_file: /home/sdunne/.ssh/sdunnerh
+        #ansible_private_key_file: /home/sdunne/.ssh/sdunnerh
+
+    - name: Test ssh
+      ansible.builtin.ping:
+      delegate_to: "{{ ec2info.instances[0].public_dns_name }}"
         
 - name: Install containerized AAP
   hosts: aap

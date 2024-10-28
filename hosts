@@ -1,8 +1,2 @@
 [splunk]
-ec2-3-130-27-87.us-east-2.compute.amazonaws.com
-
-[aapfull]
-ec2-3-128-128-25.us-east-2.compute.amazonaws.com
-ec2-3-20-88-96.us-east-2.compute.amazonaws.com
-ec2-3-139-29-124.us-east-2.compute.amazonaws.com
-
+ec2-3-146-99-119.us-east-2.compute.amazonaws.com
