@@ -19,7 +19,7 @@
       community.general.mail:
         host: smtp.gmail.com
         port: 587
-        username: sebastian.dunne@gmail.com
+        username: "{{ gmail_username }}"
         password: "{{ gmail_app_password }}"
         to: Sebastian Dunne <sdunne@redhat.com>
         subject: Ansible-report
