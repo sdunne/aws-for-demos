@@ -25,4 +25,5 @@
         subject: Ansible-report
         body: System {{ ansible_hostname }} has been successfully provisioned.
       delegate_to: localhost
+      check_mode: no
 
