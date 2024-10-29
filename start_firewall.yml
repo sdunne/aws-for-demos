@@ -1,6 +1,6 @@
 ---
 - name: Test playbook for EDA
-  hosts: splunk
+  hosts: all
   become: true
 
   tasks:
