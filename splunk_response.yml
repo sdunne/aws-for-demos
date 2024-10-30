@@ -6,7 +6,7 @@
   tasks:
     - name: Show eventdata var
       ansible.builtin.debug:
-        var: eventdata
+        var: eventdata.result
 
     - name: Send test email
       community.general.mail:
