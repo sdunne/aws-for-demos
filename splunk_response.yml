@@ -1,6 +1,6 @@
 ---
-- name: Testing AAP and Splunk and EDA for SSMO
-  hosts: all
+- name: EDA response to Splunk alert
+  hosts: _hosts 
   become: true
 
   tasks:
@@ -27,3 +27,10 @@
       delegate_to: localhost
       check_mode: no
 
+    - name: Show eventdata var
+      ansible.builtin.debug:
+        var: "{{ eventdata }}"
+
+    - name: Show _hosts var
+      ansible.builtin.debug:
+        var: "{{ _hosts }}"
