@@ -18,6 +18,6 @@
         subject: Ansible-report
         body: >
               The configuration of {{ eventdata.result.ansible_host }} has changed.  
-              Please check that {{ eventdata.result.ansible_result.name }} is started.
+              Please check that {{ eventdata['result']['ansible_result.name'] }} is started.
       delegate_to: localhost
 
