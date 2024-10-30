@@ -16,9 +16,10 @@
         password: "{{ gmail_app_password }}"
         to: Sebastian Dunne <sdunne@redhat.com>
         subject: Ansible-report
-        body: > The {{ eventdata.ansible_result.name }} configuration 
-              of {{ eventdata.ansible_host }} has changed. Please ensure 
-              the {{ eventdata.ansible_result.name }} is {{ eventdata.ansible_result.state }}.
+        body: >
+          The {{ eventdata.ansible_result.name }} configuration 
+          of {{ eventdata.ansible_host }} has changed. Please ensure 
+          the {{ eventdata.ansible_result.name }} is {{ eventdata.ansible_result.state }}.
       delegate_to: localhost
       check_mode: no
 
