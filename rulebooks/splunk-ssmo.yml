@@ -22,7 +22,7 @@
       condition: event.payload is defined
       action:
         run_job_template:
-          name: "Ensure firewall running"
+          name: "Response to Splunk alert via EDA"
           organization: Default
           job_args:
             extra_vars:
