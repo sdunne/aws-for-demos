@@ -1,20 +1,9 @@
 ---
 - name: EDA response to Splunk alert
-  hosts: _hosts 
+  hosts: localhost
   become: true
 
   tasks:
-    - name: Install firewalld package
-      ansible.builtin.dnf:
-        name: firewalld
-        state: present
-
-    - name: firewalld service enabled and started
-      ansible.builtin.service:
-        name: firewalld
-        enabled: true
-        state: started
-
     - name: Send test email
       community.general.mail:
         host: smtp.gmail.com
