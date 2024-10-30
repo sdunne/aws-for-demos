@@ -15,15 +15,15 @@
         enabled: true
         state: started
 
-    - name: Send test email
-      community.general.mail:
-        host: smtp.gmail.com
-        port: 587
-        username: "{{ gmail_username }}"
-        password: "{{ gmail_app_password }}"
-        to: Sebastian Dunne <sdunne@redhat.com>
-        subject: Ansible-report
-        body: System {{ ansible_hostname }} has been successfully provisioned.
-      delegate_to: localhost
-      check_mode: no
+        #- name: Send test email
+        #  community.general.mail:
+        #    host: smtp.gmail.com
+        #    port: 587
+        #    username: "{{ gmail_username }}"
+        #    password: "{{ gmail_app_password }}"
+        #    to: Sebastian Dunne <sdunne@redhat.com>
+        #    subject: Ansible-report
+        #    body: System {{ ansible_hostname }} has been successfully provisioned.
+        #  delegate_to: localhost
+        #  check_mode: no
 
