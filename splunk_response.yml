@@ -4,6 +4,10 @@
   become: true
 
   tasks:
+    - name: Show eventdata var
+      ansible.builtin.debug:
+        var: eventdata
+
     - name: Send test email
       community.general.mail:
         host: smtp.gmail.com
@@ -12,14 +16,9 @@
         password: "{{ gmail_app_password }}"
         to: Sebastian Dunne <sdunne@redhat.com>
         subject: Ansible-report
-        body: System {{ ansible_hostname }} has been successfully provisioned.
+        body: > The {{ eventdata.ansible_result.name }} configuration 
+              of {{ eventdata.ansible_host }} has changed. Please ensure 
+              the {{ eventdata.ansible_result.name }} is {{ eventdata.ansible_result.state }}.
       delegate_to: localhost
       check_mode: no
 
-    - name: Show eventdata var
-      ansible.builtin.debug:
-        var: eventdata
-
-    - name: Show _hosts var
-      ansible.builtin.debug:
-        var: _hosts
