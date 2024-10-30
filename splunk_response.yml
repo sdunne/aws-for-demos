@@ -18,8 +18,8 @@
 
     - name: Show eventdata var
       ansible.builtin.debug:
-        var: "{{ eventdata }}"
+        var: eventdata
 
     - name: Show _hosts var
       ansible.builtin.debug:
-        var: "{{ _hosts }}"
+        var: _hosts
