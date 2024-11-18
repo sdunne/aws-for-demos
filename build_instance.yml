@@ -2,8 +2,8 @@
 - name: Build aws infra and then instance
   hosts: localhost
   
-  vars_files:
-    - secrets.yml
+#  vars_files:
+#    - secrets.yml
   # uncomment above to run with ansible-navigator
 
   # module_defaults:
@@ -13,8 +13,8 @@
   #     secret_key: '{{ vault_aws_secret_key }}'
 
   environment:
-    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
-    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+#    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+#    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
   # uncomment above to run with ansible-navigator
     AWS_REGION: "{{ aws_region }}"
   
