@@ -1,0 +1,102 @@
+---
+- name: Gather info on new ec2 instance on which to install containerized AAP
+  hosts: localhost
+  
+  vars_files:
+    - secrets.yml
+  # uncomment to run with ansible-navigator
+
+  # module_defaults:
+  #   group/amazon.aws.aws:
+  #     region: us-east-2
+  #     access_key: '{{ vault_aws_access_key }}'
+  #     secret_key: '{{ vault_aws_secret_key }}'
+
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+  # uncomment to run with ansible-navigator
+    AWS_REGION: "{{ aws_region }}"
+  
+  vars:
+    aws_region: us-east-2
+    aws_keypair: sdunnerh
+    aws_instance_name: rhel9aap
+
+  tasks:
+    - name: Gather ec2 instance info
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:Name": "{{ aws_instance_name }}"
+      register: ec2info
+
+    - name: Show ec2 info
+      ansible.builtin.debug:
+        var: ec2info.instances[0].public_dns_name
+
+    - name: Create var for install inventory
+      ansible.builtin.set_fact:
+        fqdn_of_your_rhel_host: "{{ ec2info.instances[0].private_dns_name }}"
+        # cacheable: yes
+
+    - name: Show new _hosts var
+      ansible.builtin.debug:
+        msg: The host is "{{ fqdn_of_your_rhel_host }}"
+
+    - name: Add host inventory hosts file
+      ansible.builtin.add_host:
+        name: "{{ ec2info.instances[0].public_dns_name }}"
+        groups: aap
+        #ansible_private_key_file: /home/sdunne/.ssh/sdunnerh
+
+    - name: Test ssh
+      ansible.builtin.ping:
+      delegate_to: "{{ ec2info.instances[0].public_dns_name }}"
+        
+- name: Install containerized AAP
+  hosts: aap
+  become: true
+
+  vars_files:
+    - secrets.yml
+
+  vars:
+    bundle_dir: /home/ec2-user/ansible-automation-platform-containerized-setup-bundle-2.4-2-x86_64/bundle
+    fqdn_of_your_rhel_host: "{{ hostvars.localhost.fqdn_of_your_rhel_host }}"
+
+  tasks:
+    - name: Register to RHSM
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ rhsm_username }}"
+        password: "{{ rhsm_password }}"
+
+    - name: Update all packages
+      ansible.builtin.dnf:
+        state: latest
+        name: "*"
+
+    - name: Install other needed packages
+      ansible.builtin.dnf:
+        state: latest
+        name:
+          - vim
+          - tmux
+          - wget
+          - ansible-core
+          - git
+          - rsync
+
+    - name: Pull installation tar file
+      ansible.builtin.pause:
+        prompt: "Make sure installation tar file is there and un-tarred"
+      # ansible.builtin.get_url:
+
+    # - name: Untar installation file
+    #   ansible.builtin.unarchive:
+    #     src: /home/ec2-user/aap242c.tar
+
+    - name: Populate inventory file
+      ansible.builtin.template:
+        src: files/inventory.j2
+        dest: /home/ec2-user/ansible-automation-platform-containerized-setup-bundle-2.4-2-x86_64/inventory
