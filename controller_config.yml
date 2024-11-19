@@ -70,7 +70,7 @@
   - name: Update project before creating new job templates
     ansible.controller.project_update:
       project: "AWS targets setup"
-      timeout: 10
+      timeout: 20
 
   - name: Create job template to build aws instance
     ansible.controller.job_template:
