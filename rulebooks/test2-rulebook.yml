@@ -17,12 +17,12 @@
         - ansible.eda.dashes_to_underscores:
 
   rules:
-    - name: Splunk to EDA
-      #condition: "SERVICE_STOP" in event.payload.result._raw and "firewalld" in event.payload.result._raw
-      condition: event.payload is defined
+    - name: Testing Splunk to EDA
+      condition: "SERVICE_STOP" in event.payload.result._raw and "firewalld" in event.payload.result._raw
+      # condition: event.payload is defined
       action:
         run_job_template:
-          name: "Response to Splunk alert via EDA"
+          name: "Remediate firewall"
           organization: Default
           job_args:
             extra_vars:
