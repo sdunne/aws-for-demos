@@ -19,11 +19,8 @@
   rules:
     - name: Testing Splunk to EDA
       condition: |
-        #event.payload.result._raw is search("SERVICE_STOP") and
-        #event.payload.result._raw is search("firewalld") 
-        all:
-          - event.payload.result._raw contains "SERVICE_STOP"
-          - event.payload.result._raw contains "firewalld"
+        event.payload.result._raw is search("SERVICE_STOP") and
+        event.payload.result._raw is search("firewalld") 
       #condition: event.payload is defined
       action:
         run_job_template:
