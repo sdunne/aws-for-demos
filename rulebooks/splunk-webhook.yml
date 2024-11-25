@@ -19,7 +19,7 @@
   rules:
     - name: Testing Splunk to EDA
       #condition: '"SERVICE_STOP" in event.payload.result._raw and "firewalld" in event.payload.result._raw'
-      condition: "SERVICE_STOP in event.payload.result._raw"
+      condition: "SERVICE_STOP" in event.payload.result._raw
       #condition: event.payload is defined
       action:
         run_job_template:
