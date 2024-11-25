@@ -18,11 +18,12 @@
 
   rules:
     - name: Testing Splunk to EDA
-      #condition:: event.payload is definted
+      #condition: event.payload is definted
       condition:
         all:
           - event.payload.result._raw contains "SERVICE_STOP"
           - event.payload.result._raw contains "firewalld"
+      #condition: fubar
       action:
         run_job_template:
           name: "Remediate firewall"
