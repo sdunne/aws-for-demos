@@ -1,0 +1,46 @@
+---
+- name: Gather info on ec2 instance and control power
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+  # uncomment to run with ansible-navigator
+
+  module_defaults:
+    group/amazon.aws.aws:
+      region: us-east-2
+      access_key: '{{ aws_access_key }}'
+      secret_key: '{{ aws_secret_key }}'
+
+#  environment:
+#    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+#    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+#    # uncomment to run with ansible-navigator
+#    AWS_REGION: "{{ aws_region }}"
+
+  vars:
+    aws_region: us-east-2
+    aws_keypair: sdunnerh
+    aws_instance_name: rhel9-demo
+    powerstate: stopped
+    # stopped, started, or rebooted
+
+  tasks:
+    - name: Gather ec2 instance info
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:Name": "{{ aws_instance_name }}"
+      register: ec2info
+
+    - name: Show ec2 info
+      ansible.builtin.debug:
+        #var: ec2info.instances[0].public_dns_name
+        var: ec2info.instances[0].instance_id
+
+    - name: Modify state of instance
+      amazon.aws.ec2_instance:
+        state: "{{ powerstate }}"
+        instance_ids:
+          - "{{ ec2info.instances[0].instance_id }}"
+
+

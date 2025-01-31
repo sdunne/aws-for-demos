@@ -1,0 +1,23 @@
+---
+- name: EDA response to SNOW source data
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Show SNOW eventdata var
+      ansible.builtin.debug:
+        var: eventdata
+
+#    - name: Send test email
+#      community.general.mail:
+#        host: smtp.gmail.com
+#        port: 587
+#        username: "{{ gmail_username }}"
+#        password: "{{ gmail_app_password }}"
+#        to: Sebastian Dunne <sdunne@redhat.com>
+#        subject: Ansible-report
+#        body: | 
+#              The configuration of {{ eventdata.result.ansible_host }} has changed.  
+#              Please check that {{ eventdata['result']['ansible_result.name'] }} is {{ eventdata['result']['ansible_result.state'] }}.
+#        # delegate_to: localhost
+#
