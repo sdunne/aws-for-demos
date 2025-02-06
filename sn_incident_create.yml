@@ -1,0 +1,35 @@
+---
+- name: Create a SNOW incident
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+
+  module_defaults:
+    servicenow.itsm.incident:
+      instance:
+        host: "{{ sn_host }}"
+        username: "{{ sn_user }}"
+        password: "{{ sn_password }}"
+
+  tasks:
+    - name: Create incident
+      servicenow.itsm.incident:
+#        instance:
+#          host: 
+#          username:
+#          password: 
+        state: new
+        caller: sebastian.dunne
+        short_description: Test incident created with Ansible
+        description: The service *service* stopped running.
+  #      attachments:
+  #        - path: path/to/attachment.txt
+        impact: low
+        urgency: low
+      register: sn_response
+
+    - name: Show incident creation details
+      ansible.builtin.debug:
+        var: sn_response
+
