@@ -31,5 +31,10 @@
 
     - name: Show incident creation details
       ansible.builtin.debug:
-        var: sn_response
+        var: sn_response.record
+
+    - name: Change state to in_progress
+      servicenow.itsm.incident:
+        number: "{{ sn_response['record']['number'] }}"
+        state: in_progress
 
