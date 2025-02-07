@@ -1,0 +1,25 @@
+---
+- name: Webhook splunk alerts
+  hosts: all
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+      filters:
+        - ansible.eda.dashes_to_underscores:
+
+  rules:
+    - name: Splunk to EDA
+      condition: event.payload is defined
+      #condition: |
+      #  event.payload.result._raw is search("SERVICE_STOP") and
+      #  event.payload.result._raw is search("firewalld")
+      action:
+        run_job_workflow_template:
+          name: "SNOW demo"
+          organization: Default
+          job_args:
+            extra_vars:
+              eventdata: "{{ event.payload }}"
+              _hosts: "{{ event.payload.result.host }}"
