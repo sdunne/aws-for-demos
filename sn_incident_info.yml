@@ -15,9 +15,9 @@
   tasks:
     - name: Pull incident info
       servicenow.itsm.incident_info:
-        #number: "{{ ticket }}"
+        number: "{{ ticket }}"
         #number: eventdata.number
-        number: "{{ sn_response['record']['number'] }}"
+        #number: "{{ sn_response['record']['number'] }}"
       register: result
 
     - name: Show incident info
