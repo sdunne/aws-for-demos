@@ -1,5 +1,5 @@
 ---
-- name: Create a SNOW incident
+- name: Pull and show SNOW incident info
   hosts: localhost
 
   vars_files:
@@ -15,8 +15,8 @@
   tasks:
     - name: Pull incident info
       servicenow.itsm.incident_info:
-        number: "{{ ticket }}"
-        #number: eventdata.number
+        #number: "{{ ticket }}"
+        number: eventdata.number
       register: result
 
     - name: Show incident info

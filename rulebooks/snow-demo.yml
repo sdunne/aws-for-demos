@@ -9,8 +9,8 @@
     - name: Output ServiceNow Information
       condition: event.meta is defined
       action:
-        run_job_template:
-          name: "Show SNOW payload"
+        run_job_workflow_template:
+          name: "SNOW demo"
           organization: Default
           job_args:
             extra_vars:
