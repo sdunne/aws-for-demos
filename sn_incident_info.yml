@@ -14,11 +14,10 @@
 
   tasks:
     - name: Pull incident info
-      - name: Retrieve incidents by number
-        servicenow.itsm.incident_info:
-          number: "{{ ticket }}"
-          #number: eventdata.number
-        register: result
+      servicenow.itsm.incident_info:
+        number: "{{ ticket }}"
+        #number: eventdata.number
+      register: result
 
     - name: Show incident info
       ansible.builtin.debug:
