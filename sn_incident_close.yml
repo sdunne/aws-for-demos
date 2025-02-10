@@ -16,8 +16,8 @@
     - name: Change state to closed
       servicenow.itsm.incident:
         state: closed
-        #number: "{{ sn_response['record']['number'] }}"
-        number: "{{ ticket }}"
+        number: "{{ sn_response['record']['number'] }}"
+        #number: "{{ ticket }}"
         close_code: "Solved (Work Around)"
         close_notes: "Service restarted, needs investigation."
 
