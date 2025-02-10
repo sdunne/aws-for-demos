@@ -19,6 +19,6 @@
         subject: Ansible-report
         body: | 
               The configuration of {{ eventdata['result']['host'] }} has changed.  
-              Please check that {{ eventdata['result']['ansible_result.name'] }} is {{ eventdata['result']['ansible_result.state'] }}.
+              Please check the {{ eventdata['result']['unit'] }} service.
         # delegate_to: localhost
 
