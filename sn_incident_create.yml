@@ -35,6 +35,8 @@
         state: in_progress
 
     - name: Create variable for SNOW ticket number
-      ansible.builtin.set_fact:
-        sn_ticket_number: "{{ sn_response['record']['number'] }}"
+      ansible.builtin.set_stats:
+        data:
+          sn_ticket_number: "{{ sn_response['record']['number'] }}"
+
 
