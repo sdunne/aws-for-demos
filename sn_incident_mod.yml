@@ -17,5 +17,5 @@
       servicenow.itsm.incident:
         state: in_progress
         #number: "{{ sn_response['record']['number'] }}"
-        number: "{{ ticket }}"
+        number: "{{ sn_ticket_number }}"
         close_notes: "Requires manual intervention."
