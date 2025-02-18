@@ -24,9 +24,10 @@
     aws_type: t2.xlarge
     aws_ami: ami-0308c421b6e6bd704 # rhel-9.4
     aws_sg_name: ports-in
-    aws_instance_name: rhel9aap
+    aws_instance_name: rhel9
     aws_exact_count: 1
     aws_volume_size: 60
+    aws_public_ip: true
 
   tasks:
     - name: Create keypair with sdunnerh.pub
@@ -137,3 +138,4 @@
       amazon.aws.ec2_eip:
         device_id: "{{ instance_info.instance_ids[0] }}"
       tags: eip
+      when: aws_public_ip = true
