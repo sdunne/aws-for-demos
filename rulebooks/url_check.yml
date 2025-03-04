@@ -1,0 +1,17 @@
+---
+- name: Simple check url rulebook
+  hosts: localhost
+  sources:
+    - name: Poll url
+      ansible.eda.url_check:
+        urls:
+          - http://sebastiandunne.com
+        delay: 10
+
+  rules:
+    - name: Test rule
+      condition: event.url_check.status == "up"
+      action:
+        #debug: event.payload 
+        debug:
+          msg: "Website is up with status code {{ event.url_check.status_code }}"

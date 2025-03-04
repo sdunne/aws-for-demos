@@ -1,0 +1,21 @@
+---
+- name: Modify a SNOW ticket for manual intervention
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+
+#  module_defaults:
+#    servicenow.itsm.incident:
+#      instance:
+#        host: "{{ sn_host }}"
+#        username: "{{ sn_user }}"
+#        password: "{{ sn_password }}"
+
+  tasks:
+    - name: Request manual intervention
+      servicenow.itsm.incident:
+        state: in_progress
+        #number: "{{ sn_response['record']['number'] }}"
+        number: "{{ sn_ticket_number }}"
+        close_notes: "Requires manual intervention."

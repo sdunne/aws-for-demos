@@ -1,0 +1,231 @@
+- name: Configure controller to build and manage demo ec2 instances
+  hosts: localhost
+
+  environment:
+    CONTROLLER_HOST: "{{ controller_hostname }}"
+    CONTROLLER_OAUTH_TOKEN: "{{ controller_token }}"
+    CONTROLLER_VERIFY_SSL: false
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+  - name: Create the ec2 machine cred using sdunnerh
+    ansible.controller.credential:
+      name: ec2 instance
+      organization: Default
+      state: present
+      credential_type: Machine
+      inputs:
+        username: ec2-user
+        ssh_key_data: "{{ lookup('file', '/home/runner/.aws/sdunnerh') }}"
+        #ssh_key_data: "{{ ssh_key_for_ec2 }}"
+    changed_when: false
+
+  - name: Add aws credential
+    ansible.controller.credential:
+      name: "aws access and secret keys"
+      description: ""
+      organization: Default
+      credential_type: "Amazon Web Services"
+      state: present
+      update_secrets: false
+      inputs:
+        username: "{{ aws_access_key }}"
+        password: "{{ aws_secret_key }}"
+
+  - name: Create inventory called "demo targets"
+    ansible.controller.inventory:
+      name: "demo targets"
+      description: "aws instance and other demo targets"
+      organization: Default 
+      state: present
+      instance_groups:
+        - controlplane
+
+  - name: Add aws inventory source to demo target inventory
+    ansible.controller.inventory_source:
+      name: aws demo open env
+      source: ec2
+      description: aws open environment from demo.rh.com
+      inventory: "demo targets"
+      credential: "aws access and secret keys"
+      overwrite: True
+      update_on_launch: True
+      organization: Default
+      source_vars:
+        compose:
+          ansible_host: public_dns_name
+        # hostnames:
+        #   - tag:Name
+
+  - name: Update a single inventory source
+    ansible.controller.inventory_source_update:
+      name: "aws demo open env"
+      inventory: "demo targets"
+      organization: Default
+
+  - name: Add github.com/sdunne project
+    ansible.controller.project:
+      name: "AWS targets setup"
+      description: "Setup controller for AWS targets"
+      organization: "Default"
+      scm_update_on_launch: True
+      scm_update_cache_timeout: 60
+      state: present
+      scm_type: git
+      scm_url: https://github.com/sdunne/aws-for-demos.git
+
+  - name: Update project before creating new job templates
+    ansible.controller.project_update:
+      project: "AWS targets setup"
+      timeout: 20
+
+  - name: Create job template to build aws instance
+    ansible.controller.job_template:
+      name: "AWS / build instance"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "build_instance.yml"
+      credentials:
+        - "aws access and secret keys"
+      #  - "2nd credential"
+      survey_enabled: yes
+      survey_spec: "{{ lookup('file', 'survey-build-instance.json') }}"
+      state: present
+
+  - name: Create job template to configure Splunk client
+    ansible.controller.job_template:
+      name: "AWS / configure Splunk client"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "config_splunk_client.yml"
+      credentials:
+        - "ec2 instance"
+      #  - "2nd credential"
+      ask_limit_on_launch: true
+      state: present
+
+  - name: Create EDA action test job template
+    ansible.controller.job_template:
+      name: "EDA action test"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "eda_action_test.yml"
+      credentials:
+        - "ec2 instance"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: Create Remediate firewall job template
+    ansible.controller.job_template:
+      name: "Remediate firewall"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "remediate_firewall.yml"
+      credentials:
+        - "ec2 instance"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: Create custom credential for SNOW
+    ansible.controller.credential_type:
+      name: custom SNOW
+      kind: cloud
+      inputs: "{{ lookup('file', 'snow_cred_inputs.json') }}"
+      injectors: "{{ lookup('file', 'snow_cred_injectors.json') }}"
+      state: present
+
+  - name: Add SNOW credential
+    ansible.controller.credential:
+      name: "SNOW ven07620"
+      description: ""
+      organization: Default
+      credential_type: "SNOW custom"
+      state: present
+      update_secrets: false
+      inputs:
+        SN_HOST: "{{ sn_host }}"
+        SN_USERNAME: "{{ sn_user }}"
+        SN_PASSWORD: "{{ sn_password }}"
+
+  - name: SNOW create incident job template
+    ansible.controller.job_template:
+      name: "SNOW create incident"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "sn_incident_create.yml"
+      credentials:
+        - "SNOW ven07620"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: SNOW close incident job template
+    ansible.controller.job_template:
+      name: "SNOW close incident"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "sn_incident_close.yml"
+      credentials:
+        - "SNOW ven07620"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: SNOW modify incident job template
+    ansible.controller.job_template:
+      name: "SNOW modify incident"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "sn_incident_mod.yml"
+      credentials:
+        - "SNOW ven07620"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: React to Splunk alert from EDA
+    ansible.controller.job_template:
+      name: "Splunk alert received"
+      job_type: run
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "splunk_alert_received.yml"
+      #credentials:
+      #  - "SNOW ven07620"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+
+  - name: Create job template to update ec2 instances and deploy firewalld
+    ansible.controller.job_template:
+      name: "AWS / update instances - deploy firewalld"
+      job_type: check
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "ec2-update.yml"
+      credentials:
+        - "ec2 instance"
+      #  - "2nd credential"
+      ask_variables_on_launch: true
+      state: present
+

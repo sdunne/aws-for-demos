@@ -1,0 +1,54 @@
+{
+    "description": "",
+    "name": "",
+    "spec": [
+        {
+            "choices": "",
+            "default": 1,
+            "max": 5,
+            "min": 1,
+            "new_question": true,
+            "question_description": "",
+            "question_name": "How many instances to have deployed?  ",
+            "required": true,
+            "type": "integer",
+            "variable": "aws_exact_count"
+        },
+        {
+            "choices": "",
+            "default": "rhel9-demo",
+            "max": 1024,
+            "min": 0,
+            "new_question": true,
+            "question_description": "",
+            "question_name": "Name for instances",
+            "required": true,
+            "type": "text",
+            "variable": "aws_instance_name"
+        },
+        {
+            "choices": "",
+            "default": 10,
+            "max": 100,
+            "min": 10,
+            "new_question": true,
+            "question_description": "",
+            "question_name": "Volume size?",
+            "required": true,
+            "type": "integer",
+            "variable": "aws_volume_size"
+        },
+        {
+            "choices": "",
+            "default": "t2.small",
+            "max": 1024,
+            "min": 0,
+            "new_question": false,
+            "question_description": "",
+            "question_name": "Instance type?",
+            "required": true,
+            "type": "text",
+            "variable": "aws_type"
+        }
+    ]
+}

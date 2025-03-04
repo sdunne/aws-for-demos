@@ -1,0 +1,15 @@
+---
+- name: Lookup DNS host from EE in EN
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Lookup multiple names at once (from list variable)
+      ansible.builtin.debug:
+        msg: "A record found {{ item }}"
+      loop: "{{ query('community.general.dig', *hosts) }}"
+      vars:
+        hosts:
+          - ip-10-0-0-119.us-east-2.compute.internal
+          - gmail.com.

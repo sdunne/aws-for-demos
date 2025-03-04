@@ -1,0 +1,24 @@
+---
+- name: dnf update all ec2 targets
+  hosts: all
+  become: true
+  check_mode: true
+
+  tasks:
+    - name: dnf update all
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+#    - name: dnf install firewalld
+#      ansible.builtin.dnf:
+#        name: firewalld
+#        state: latest
+#
+#    - name: Start and enable firewalld
+#      ansible.builtin.service:
+#        name: firewalld
+#        enabled: true
+#        state: started
+#      ignore_errors: true
+

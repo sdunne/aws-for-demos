@@ -1,0 +1,37 @@
+---
+- name: Configure Splunk client
+  hosts: all
+  # become: true
+
+  tasks:
+    - name: Install Splunk gpg key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://docs.splunk.com/images/6/6b/SplunkPGPKey.pub
+      become: true
+
+    - name: Download Splunk Universal Forwarder
+      ansible.builtin.get_url:
+        url: "https://download.splunk.com/products/universalforwarder/releases/9.3.1/linux/splunkforwarder-9.3.1-0b8d769cb912.x86_64.rpm"
+        dest: /home/ec2-user/splunkforwarder-9.3.1-0b8d769cb912.x86_64.rpm
+
+    - name: Install Splunk Universal Forwarder
+      ansible.builtin.dnf:
+        name: /home/ec2-user/splunkforwarder-9.3.1-0b8d769cb912.x86_64.rpm
+        state: present
+      become: true
+
+    - name: Install firewalld and other packages
+      ansible.builtin.dnf:
+        name:
+          - firewalld
+          - tmux
+        state: present
+      become: true
+
+    - name: Enable and start firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+      become: true

@@ -1,0 +1,19 @@
+---
+- name: Listen for events on Dynatrace API
+  hosts: all
+  sources:
+    - dynatrace.event_driven_ansible.dt_esa_api:
+        dt_api_host: "{{ _dt_api_host }}"
+        dt_api_token: "{{ _dt_api_token }}"
+        delay: 30
+
+  rules:
+    - name: Dynatrace | Service Issue
+      condition: event.impactedEntities[0].entityId.id is defined
+      action:
+        run_workflow_template:
+          name: Web Service Incident Autoremediation
+          organization: Default
+          job_args:
+            extra_vars:
+  

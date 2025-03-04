@@ -1,0 +1,12 @@
+---
+- name: Initial test of EDA action
+  hosts: "{{ _hosts }}"
+
+  tasks:
+    - name: Show event info
+      ansible.builtin.debug:
+        var: "{{ item }}"
+      loop:
+        - eventdata
+        - _hosts
+

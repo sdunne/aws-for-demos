@@ -1,0 +1,23 @@
+---
+- name: Create a SNOW incident
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+
+#  module_defaults:
+#    servicenow.itsm.incident:
+#      instance:
+#        host: "{{ sn_host }}"
+#        username: "{{ sn_user }}"
+#        password: "{{ sn_password }}"
+
+  tasks:
+    - name: Change state to closed
+      servicenow.itsm.incident:
+        state: closed
+        number: "{{ sn_ticket_number }}"
+        #number: "{{ ticket }}"
+        close_code: "Solved (Work Around)"
+        close_notes: "Service restarted, needs investigation."
+

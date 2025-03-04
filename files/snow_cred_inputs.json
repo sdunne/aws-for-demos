@@ -1,0 +1,25 @@
+{
+  "fields": [
+    {
+      "id": "SN_HOST",
+      "type": "string",
+      "label": "host"
+    },
+    {
+      "id": "SN_USERNAME",
+      "type": "string",
+      "label": "username"
+    },
+    {
+      "id": "SN_PASSWORD",
+      "type": "string",
+      "label": "password",
+      "secret": true
+    }
+  ],
+  "required": [
+    "SN_HOST",
+    "SN_USERNAME",
+    "SN_PASSWORD"
+  ]
+}

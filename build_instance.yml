@@ -1,0 +1,145 @@
+---
+- name: Build aws infra and then instance
+  hosts: localhost
+  
+#  vars_files:
+#    - secrets.yml
+  # uncomment above to run with ansible-navigator
+
+  # module_defaults:
+  #   group/amazon.aws.aws:
+  #     region: us-east-2
+  #     access_key: '{{ vault_aws_access_key }}'
+  #     secret_key: '{{ vault_aws_secret_key }}'
+
+  environment:
+#    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+#    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+  # uncomment above to run with ansible-navigator
+    AWS_REGION: "{{ aws_region }}"
+  
+  vars:
+    aws_region: us-east-2
+    aws_keypair: sdunnerh
+    aws_type: t2.xlarge
+    aws_ami: ami-0308c421b6e6bd704 # rhel-9.4
+    aws_sg_name: ports-in
+    aws_instance_name: rhel9
+    aws_exact_count: 1
+    aws_volume_size: 60
+    aws_public_ip: true
+
+  tasks:
+    - name: Create keypair with sdunnerh.pub
+      amazon.aws.ec2_key:
+        name: "{{ aws_keypair }}"
+        key_material: "{{ lookup('file', 'pub_key')}}"
+
+    - name: Create vpc
+      amazon.aws.ec2_vpc_net:
+        name: sdunne-vpc
+        cidr_block: 10.0.0.0/16
+      register: vpc_info
+
+    - name: Show vpc_info
+      ansible.builtin.debug:
+        var: vpc_info
+  
+    - name: Create internet gateway and attach to vpc
+      amazon.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc_info.vpc.id }}"
+        state: present
+      register: igw_info
+
+    - name: Show igw_info
+      ansible.builtin.debug:
+        var: igw_info
+        
+    - name: Create subnet in vpc
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc_info.vpc.id }}"
+        cidr: 10.0.0.0/24
+      register: subnet_info
+
+    - name: Show subnet_info
+      ansible.builtin.debug:
+        var: subnet_info
+
+    - name: Gather information about the route table associated with my vpc
+      amazon.aws.ec2_vpc_route_table_info:
+        filters:
+          vpc-id: "{{ vpc_info.vpc.id }}"
+      register: route_info
+
+    - name: Show route table info
+      ansible.builtin.debug:
+        var: route_info
+
+    - name: Show route table id
+      ansible.builtin.debug:
+        var: route_info.route_tables[0].id
+
+    - name: Add default route to igw to route table
+      amazon.aws.ec2_vpc_route_table:
+        # route_table_id: rtb-040174394999e9b7f
+        # route_table_id: "{{ route_info.route_tables[0].id }}"
+        vpc_id: "{{ vpc_info.vpc.id }}"
+        subnets:
+          - "{{ subnet_info.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ igw_info['gateway_id'] }}"
+
+    - name: Create security group
+      amazon.aws.ec2_security_group:
+        name: "{{ aws_sg_name }}"
+        description: sg for ports-in
+        vpc_id: "{{ vpc_info.vpc.id }}"
+        rules:
+        - proto: tcp
+          ports:
+            - 22
+            - 27199
+          cidr_ip: 173.73.147.202/32
+        - proto: tcp
+          ports:
+            - 8443-8445
+          cidr_ip: 173.73.147.202/32
+        - proto: all
+          group_name: "{{ aws_sg_name }}"
+
+    - name: Create an instance
+      amazon.aws.ec2_instance:
+        name: "{{ aws_instance_name }}"
+        exact_count: "{{ aws_exact_count }}"
+        key_name: "{{ aws_keypair }}"
+        vpc_subnet_id: "{{ subnet_info.subnet.id }}"
+        instance_type: "{{ aws_type }}"
+        security_group: "{{ aws_sg_name }}"
+        # network:
+        #   assign_public_ip: true
+        image_id: "{{ aws_ami }}"
+        tags:
+          Environment: Dev/Test
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_size: "{{ aws_volume_size }}"
+              delete_on_termination: true
+      register: instance_info
+
+    - name: Show instance_info
+      ansible.builtin.debug:
+        msg: The instance id is "{{ instance_info.instance_ids[0] }}"
+
+    - name: Pause for instance to be ready
+      ansible.builtin.pause:
+        minutes: 1
+
+    - name: Allocate a new elastic IP and associate it with an instance
+      amazon.aws.ec2_eip:
+        device_id: "{{ instance_info.instance_ids[0] }}"
+      tags: eip
+      when: aws_public_ip == "True"
+

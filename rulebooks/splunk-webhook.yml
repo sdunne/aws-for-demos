@@ -1,0 +1,35 @@
+---
+- name: Webhook splunk alerts
+  hosts: all
+  sources:
+    - name: Listen for alerts
+      ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+        # host:     The hostname to listen to. Set to 0.0.0.0 to listen on all
+        #           interfaces. Defaults to 127.0.0.1
+        # port:     The TCP port to listen to.  Defaults to 5000
+        # token:    The optional authentication token expected from client
+        # certfile: The optional path to a certificate file to enable TLS support
+        # keyfile:  The optional path to a key file to be used together with certfile
+        # password: The optional password to be used when loading the certificate chain
+      filters:
+        - ansible.eda.dashes_to_underscores:
+
+  rules:
+    - name: Testing Splunk to EDA
+      #condition: event.payload is defined
+      condition: |
+        event.payload.result._raw is search("SERVICE_STOP") and
+        event.payload.result._raw is search("firewalld")
+      action:
+        run_workflow_template:
+          name: "Splunk-EDA-SNOW demo"
+        #run_job_template:
+          #name: "Remediate firewall"
+          #name: "Splunk alert received" 
+          organization: Default
+          job_args:
+            extra_vars:
+              eventdata: "{{ event.payload }}"
+              _hosts: "{{ event.payload.result.host }}"

@@ -1,0 +1,37 @@
+---
+- name: Testing AAP and Splunk and EDA for SSMO
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install firewalld package
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: firewalld service enabled and started
+      ansible.builtin.service:
+        name: firewalld
+        enabled: true
+        state: started
+      register: firewall
+
+    - name: Show firewall var
+      ansible.builtin.debug:
+        var: firewall
+
+    - name: Send test email
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ gmail_username }}"
+        password: "{{ gmail_app_password }}"
+        to: Sebastian Dunne <sdunne@redhat.com>
+        subject: Ansible-report
+        body: |
+              The configuration of {{ ansible_host }} has changed.
+              {{ firewall.name }} is currently {{ firewall.status.ActiveState }}.
+      delegate_to: localhost
+      check_mode: no
+      when: firewall.changed
+
