@@ -34,6 +34,15 @@
         username: "{{ aws_access_key }}"
         password: "{{ aws_secret_key }}"
 
+#  - name: Add PAH credential
+#    ansible.controller.credential:
+#      name: PAH local
+#      description: "local Private Automation Hub"
+#      organization: Default
+#      credential_type: "Container Registry"
+#      state: present
+#      inputs:
+
   - name: Create inventory called "demo targets"
     ansible.controller.inventory:
       name: "demo targets"
@@ -228,4 +237,58 @@
       #  - "2nd credential"
       ask_variables_on_launch: true
       state: present
+
+  - name: Add a remote registry to AH
+    ansible.hub.ah_ee_registry:
+      name: myquay.io
+      state: present
+      url: https://quay.io
+      username: "{{ rhsm_username }}"
+      password: "{{ rhsm_password }}"
+      ah_host: "{{ ah_host }}" 
+      ah_username: "{{ ah_username }}"
+      ah_password: "{{ ah_password }}"
+      validate_certs: false
+    no_log: True
+    tags: quay
+
+  - name: Sync registry.redhat.io registry and wait up to 15 seconds
+    ansible.hub.ah_ee_registry_sync:
+      name: myquay.io
+      wait: true
+      timeout: 15 
+      ah_host: "{{ ah_host }}" 
+      ah_username: "{{ ah_username }}"
+      ah_password: "{{ ah_password }}"
+      validate_certs: false
+    tags: quay
+    no_log: True
+
+  - name: Add a remote repository from quayio registry
+    ansible.hub.ah_ee_repository:
+      name: ee-sdunne
+      upstream_name: /sdunnesa/ee-sdunne
+      registry: myquay.io
+#      include_tags:
+#        - latest
+#        - 0.0.1
+      state: present
+      ah_host: "{{ ah_host }}" 
+      ah_username: "{{ ah_username }}"
+      ah_password: "{{ ah_password }}"
+      validate_certs: false
+    no_log: True
+    tags: quay
+
+  - name: Sync ee-supported-rhel8 repository and wait up to 30 seconds
+    ansible.hub.ah_ee_repository_sync:
+      name: ee-sdunne
+      wait: true
+      timeout: 30
+      ah_host: "{{ ah_host }}" 
+      ah_username: "{{ ah_username }}"
+      ah_password: "{{ ah_password }}"
+      validate_certs: false
+    no_log: True
+    tags: quay
 

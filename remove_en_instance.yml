@@ -10,14 +10,8 @@
     - secrets.yml
 
   tasks:
-  - name: Create the ec2 machine cred using sdunnerh
-    ansible.controller.credential:
-      name: ec2 instance
-      organization: Default
-      state: present
-      credential_type: Machine
-      inputs:
-        username: ec2-user
-        ssh_key_data: "{{ lookup('file', '/home/runner/.aws/sdunnerh') }}"
-        #ssh_key_data: "{{ ssh_key_for_ec2 }}"
-    changed_when: false
+  - name: Remove instance
+    ansible.controller.instance:
+      hostname: ec2-18-220-237-70.us-east-2.compute.amazonaws.com
+      node_state: deprovisioning
+
