@@ -1,0 +1,28 @@
+---
+- name: Run an scap scan on a host
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install scap-security-guide
+      ansible.builtin.dnf:
+        name: scap-security-guide
+        state: latest
+
+    - name: Run scap scan
+      command: "oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_server_l1 --report /tmp/oscap-report.html --fetch-remote-resources /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml"
+
+    - name: Send test email
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ gmail_username }}"
+        password: "{{ gmail_app_password }}"
+        to: Sebastian Dunne <sdunne@redhat.com>
+        subject: Ansible-report
+        body: The scap report is attached.  
+        attach:
+          - /tmp/oscap-report.html
+      delegate_to: localhost
+      check_mode: no
+      when: firewall.changed      

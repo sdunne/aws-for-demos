@@ -65,8 +65,8 @@
       source_vars:
         compose:
           ansible_host: public_dns_name
-        # hostnames:
-        #   - tag:Name
+        hostnames:
+          - tag:Name
 
   - name: Update a single inventory source
     ansible.controller.inventory_source_update:
@@ -236,6 +236,20 @@
         - "ec2 instance"
       #  - "2nd credential"
       ask_variables_on_launch: true
+      state: present
+
+  - name: Create job template to run CIS Server baseline L1
+    ansible.controller.job_template:
+      name: "AWS / run CIS Server baseline L1"
+      job_type: check
+      organization: Default
+      inventory: "demo targets"
+      project: "AWS targets setup"
+      playbook: "rhel9-playbook-cis_server_l1.yml"
+      credentials:
+        - "ec2 instance"
+      #  - "2nd credential"
+      ask_limit_on_launch: true
       state: present
 
   - name: Add a remote registry to AH
