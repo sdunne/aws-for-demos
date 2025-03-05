@@ -141,5 +141,5 @@
       amazon.aws.ec2_eip:
         device_id: "{{ instance_info.instance_ids[0] }}"
       tags: eip
-      when: aws_public_ip == "True"
+      when: aws_public_ip | bool
 
