@@ -1,2 +1,5 @@
+rhel9-cis ansible_host=ec2-3-135-145-240.us-east-2.compute.amazonaws.com
+
 [splunk]
 ec2-3-146-99-119.us-east-2.compute.amazonaws.com
+

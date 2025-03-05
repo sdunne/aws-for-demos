@@ -3,6 +3,9 @@
   hosts: all
   become: true
 
+  vars_files:
+    - secrets.yml
+
   tasks:
     - name: Install scap-security-guide
       ansible.builtin.dnf:
@@ -10,7 +13,7 @@
         state: latest
 
     - name: Run scap scan
-      shell: "oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_server_l1 --report /tmp/oscap-report.html --fetch-remote-resources /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml"
+      command: "oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_server_l1 --report /tmp/oscap-report.html --fetch-remote-resources /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml"
       ignore_errors: true
 
     - name: Send test email
@@ -22,8 +25,8 @@
         to: Sebastian Dunne <sdunne@redhat.com>
         subject: Ansible-report
         body: The scap report is attached.  
-        #attach:
-        #  - /tmp/oscap-report.html
-      delegate_to: localhost
+        attach:
+          - /tmp/oscap-report.html
+      #delegate_to: localhost
       check_mode: no
       #when: firewall.changed      

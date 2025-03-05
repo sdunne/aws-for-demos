@@ -1,0 +1,15 @@
+[defaults]
+inventory = ./hosts
+remote_user = ec2-user
+ask_pass = false
+#callbacks_enabled = ansible.posix.profile_tasks, community.general.splunk
+#callbacks_enabled = ansible.posix.profile_tasks
+
+[privilege_escalation]
+#become = true
+#become_method = sudo
+#become_user = root
+#become_ask_pass = false
+
+[callback_splunk]
+validate_certs = false
