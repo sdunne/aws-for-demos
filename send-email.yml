@@ -1,0 +1,23 @@
+---
+- name: Run an scap scan on a host
+  hosts: localhost
+  become: true
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Send test email
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ gmail_username }}"
+        password: "{{ gmail_app_password }}"
+        to: Sebastian Dunne <sdunne@redhat.com>
+        subject: test email from AAP
+#        body: The scap report is attached.
+#        attach:
+#          - /tmp/oscap-report.html
+      #delegate_to: localhost
+      check_mode: no
+      #when: firewall.changed 
