@@ -1,0 +1,54 @@
+- name: Add a remote registry to AH
+  ansible.hub.ah_ee_registry:
+    name: myquay.io
+    state: present
+    url: https://quay.io
+    username: "{{ rhsm_username }}"
+    password: "{{ rhsm_password }}"
+    ah_host: "{{ ah_host }}" 
+    ah_username: "{{ ah_username }}"
+    ah_password: "{{ ah_password }}"
+    validate_certs: false
+  no_log: True
+  tags: quay
+
+- name: Sync quay registry and wait up to 15 seconds
+  ansible.hub.ah_ee_registry_sync:
+    name: myquay.io
+    wait: true
+    timeout: 15 
+    ah_host: "{{ ah_host }}" 
+    ah_username: "{{ ah_username }}"
+    ah_password: "{{ ah_password }}"
+    validate_certs: false
+  tags: quay
+  #no_log: True
+  ignore_errors: true
+
+- name: Add an ee repository from quay.io registry
+  ansible.hub.ah_ee_repository:
+    name: ee-sdunne
+    upstream_name: /sdunnesa/ee-sdunne
+    registry: myquay.io
+#      include_tags:
+#        - latest
+#        - 0.0.1
+    state: present
+    ah_host: "{{ ah_host }}" 
+    ah_username: "{{ ah_username }}"
+    ah_password: "{{ ah_password }}"
+    validate_certs: false
+  no_log: True
+  tags: quay
+
+- name: Sync ee-sdunne repository and wait up to 30 seconds
+  ansible.hub.ah_ee_repository_sync:
+    name: ee-sdunne
+    wait: true
+    timeout: 30
+    ah_host: "{{ ah_host }}" 
+    ah_username: "{{ ah_username }}"
+    ah_password: "{{ ah_password }}"
+    validate_certs: false
+  no_log: True
+  tags: quay

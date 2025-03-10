@@ -1,0 +1,30 @@
+- name: Create inventory called "demo targets"
+  ansible.controller.inventory:
+    name: "demo targets"
+    description: "aws instance and other demo targets"
+    organization: Default 
+    state: present
+    instance_groups:
+      - controlplane
+
+- name: Add aws inventory source to demo target inventory
+  ansible.controller.inventory_source:
+    name: aws demo open env
+    source: ec2
+    description: aws open environment from demo.rh.com
+    inventory: "demo targets"
+    credential: "aws access and secret keys"
+    overwrite: True
+    update_on_launch: True
+    organization: Default
+    source_vars:
+      compose:
+        ansible_host: public_dns_name
+      hostnames:
+        - tag:Name
+
+- name: Update a single inventory source
+  ansible.controller.inventory_source_update:
+    name: "aws demo open env"
+    inventory: "demo targets"
+    organization: Default

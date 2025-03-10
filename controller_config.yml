@@ -14,36 +14,13 @@
     ansible.builtin.include_tasks:
       file: tasks/creds.yml
 
-  - name: Create inventory called "demo targets"
-    ansible.controller.inventory:
-      name: "demo targets"
-      description: "aws instance and other demo targets"
-      organization: Default 
-      state: present
-      instance_groups:
-        - controlplane
+  - name: Configure Private Automation Hub
+    ansible.builtin.include_tasks:
+      file: tasks/hub_config.yml
 
-  - name: Add aws inventory source to demo target inventory
-    ansible.controller.inventory_source:
-      name: aws demo open env
-      source: ec2
-      description: aws open environment from demo.rh.com
-      inventory: "demo targets"
-      credential: "aws access and secret keys"
-      overwrite: True
-      update_on_launch: True
-      organization: Default
-      source_vars:
-        compose:
-          ansible_host: public_dns_name
-        hostnames:
-          - tag:Name
-
-  - name: Update a single inventory source
-    ansible.controller.inventory_source_update:
-      name: "aws demo open env"
-      inventory: "demo targets"
-      organization: Default
+  - name: Configure inventory
+    ansible.builtin.include_tasks:
+      file: tasks/inventory_config.yml    
 
   - name: Add github.com/sdunne project
     ansible.controller.project:
@@ -216,59 +193,4 @@
       ask_limit_on_launch: true
       ask_variables_on_launch: true
       state: present
-
-  - name: Add a remote registry to AH
-    ansible.hub.ah_ee_registry:
-      name: myquay.io
-      state: present
-      url: https://quay.io
-      username: "{{ rhsm_username }}"
-      password: "{{ rhsm_password }}"
-      ah_host: "{{ ah_host }}" 
-      ah_username: "{{ ah_username }}"
-      ah_password: "{{ ah_password }}"
-      validate_certs: false
-    no_log: True
-    tags: quay
-
-  - name: Sync quay registry and wait up to 15 seconds
-    ansible.hub.ah_ee_registry_sync:
-      name: myquay.io
-      wait: true
-      timeout: 15 
-      ah_host: "{{ ah_host }}" 
-      ah_username: "{{ ah_username }}"
-      ah_password: "{{ ah_password }}"
-      validate_certs: false
-    tags: quay
-    #no_log: True
-    ignore_errors: true
-
-  - name: Add an ee repository from quay.io registry
-    ansible.hub.ah_ee_repository:
-      name: ee-sdunne
-      upstream_name: /sdunnesa/ee-sdunne
-      registry: myquay.io
-#      include_tags:
-#        - latest
-#        - 0.0.1
-      state: present
-      ah_host: "{{ ah_host }}" 
-      ah_username: "{{ ah_username }}"
-      ah_password: "{{ ah_password }}"
-      validate_certs: false
-    no_log: True
-    tags: quay
-
-  - name: Sync ee-sdunne repository and wait up to 30 seconds
-    ansible.hub.ah_ee_repository_sync:
-      name: ee-sdunne
-      wait: true
-      timeout: 30
-      ah_host: "{{ ah_host }}" 
-      ah_username: "{{ ah_username }}"
-      ah_password: "{{ ah_password }}"
-      validate_certs: false
-    no_log: True
-    tags: quay
-
+      
