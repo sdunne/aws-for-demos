@@ -1,0 +1,53 @@
+- name: Create the ec2 machine cred using sdunnerh
+  ansible.controller.credential:
+    name: ec2 instance
+    organization: Default
+    state: present
+    credential_type: Machine
+    inputs:
+      username: ec2-user
+      ssh_key_data: "{{ lookup('file', '/home/runner/.aws/sdunnerh') }}"
+      #ssh_key_data: "{{ ssh_key_for_ec2 }}"
+  changed_when: false
+
+- name: Add aws credential
+  ansible.controller.credential:
+    name: "aws access and secret keys"
+    description: ""
+    organization: Default
+    credential_type: "Amazon Web Services"
+    state: present
+    update_secrets: false
+    inputs:
+      username: "{{ aws_access_key }}"
+      password: "{{ aws_secret_key }}"
+
+- name: Create custom credential for SNOW
+  ansible.controller.credential_type:
+    name: custom SNOW
+    kind: cloud
+    inputs: "{{ lookup('file', 'snow_cred_inputs.json') }}"
+    injectors: "{{ lookup('file', 'snow_cred_injectors.json') }}"
+    state: present
+
+- name: Add SNOW credential
+  ansible.controller.credential:
+    name: "SNOW ven07620"
+    description: ""
+    organization: Default
+    credential_type: "SNOW custom"
+    state: present
+    update_secrets: false
+    inputs:
+      SN_HOST: "{{ sn_host }}"
+      SN_USERNAME: "{{ sn_user }}"
+      SN_PASSWORD: "{{ sn_password }}"
+
+#  - name: Add PAH credential
+#    ansible.controller.credential:
+#      name: PAH local
+#      description: "local Private Automation Hub"
+#      organization: Default
+#      credential_type: "Container Registry"
+#      state: present
+#      inputs:

@@ -2,6 +2,7 @@
 - name: Run an scap scan on a host
   hosts: localhost
   become: true
+  gather_facts: false
 
   vars_files:
     - secrets.yml
