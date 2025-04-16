@@ -37,4 +37,4 @@
       ansible.builtin.lineinfile:
         path: /etc/sudoers
         regexp: '^%wheel'
-        line: '%wheel ALL=(ALL) NOPASSWORD: ALL'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
