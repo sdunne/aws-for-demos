@@ -33,5 +33,8 @@
         owner: sdunne
         group: sdunne
 
-#fix wheel group
-
+    - name: Fix wheel group in sudoers no password
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWORD: ALL 
