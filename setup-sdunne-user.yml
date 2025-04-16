@@ -19,6 +19,7 @@
     - name: Copy authorized_keys from ec2-user
       ansible.builtin.copy:
         src: /home/ec2-user/.ssh/authorized_keys
+        remote_src: true
         dest: /home/sdunne/.ssh/authorized_keys
         mode: 600
         user: sdunne
