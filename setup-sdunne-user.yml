@@ -16,12 +16,20 @@
         append: true
         groups: wheel
 
+    - name: Create .ssh directory for sdunne user
+      ansible.builtin.file:
+        path: /home/sdunne/.ssh
+        state: directory
+        owner: sdunne
+        group: sdunne
+        mode: '0700' 
+
     - name: Copy authorized_keys from ec2-user
       ansible.builtin.copy:
         src: /home/ec2-user/.ssh/authorized_keys
         remote_src: true
         dest: /home/sdunne/.ssh/authorized_keys
-        mode: 600
+        mode: '600'
         owner: sdunne
         group: sdunne
 
