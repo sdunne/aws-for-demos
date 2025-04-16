@@ -22,7 +22,7 @@
         remote_src: true
         dest: /home/sdunne/.ssh/authorized_keys
         mode: 600
-        user: sdunne
+        owner: sdunne
         group: sdunne
 
 #fix wheel group
