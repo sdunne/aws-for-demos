@@ -1,0 +1,28 @@
+---
+- name: Setup sdunne user on ec2 for EN deployment
+  hosts: "{{ _hosts }}"
+  become: true
+
+  tasks:
+    - name: Update rhel packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+    - name: Add sdunne user
+      ansible.builtin.user:
+        name: sdunne
+        state: present
+        append: true
+        groups: wheel
+
+    - name: Copy authorized_keys from ec2-user
+      ansible.builtin.copy:
+        src: /home/ec2-user/.ssh/authorized_keys
+        dest: /home/sdunne/.ssh/authorized_keys
+        mode: 600
+        user: sdunne
+        group: sdunne
+
+#fix wheel group
+
