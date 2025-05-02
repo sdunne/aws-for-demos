@@ -1,0 +1,19 @@
+- name: Test VMware connectivity
+  hosts: localhost
+
+  tasks:
+    - name: Gather Cluster Information
+      vmware.vmware.cluster_info:
+#        hostname: '{{ vcenter_hostname }}'
+#        username: '{{ vcenter_username }}'
+#        password: '{{ vcenter_password }}'
+        hostname: vcsnsx-vc.infra.demo.redhat.com
+        username: sandbox-ksh5f@demo
+        password: tK2CZFUXlJU0
+        datacenter_name: SDDC-Datacenter
+#        cluster_name: my_cluster
+      register: _out
+
+    - name: Show output
+      debug:
+        var: _out
