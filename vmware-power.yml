@@ -5,7 +5,7 @@
 
   vars:
     vm_name: "rhel9test"
-    vmpowerstate: "off"
+    vmpowerstate: "on"
 
   tasks:
     - name: Power off the vm

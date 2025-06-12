@@ -1,6 +1,10 @@
 ---
 - name: Simple Ansible ping test
   hosts: all
+  gather_facts: false
+
+  vars_files:
+    - secrets.yml
   
   tasks:
     - name: Ansible ping

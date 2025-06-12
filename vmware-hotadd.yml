@@ -6,7 +6,7 @@
     - secrets.yml
 
   tasks:
-    - name: Provision a VM
+    - name: VMware hotadd resources
       ansible.builtin.import_role:
         name: cloud.vmware_ops.provision_vm
       vars:
@@ -18,16 +18,15 @@
         provision_vm_folder: "{{ vm_folder }}"
         provision_vm_datacenter: "SDDC-Datacenter"
         provision_vm_name: "{{ vm_name }}"
-        provision_vm_template: "{{ vm_template }}"
+#        provision_vm_template: "{{ vm_template }}"
 #        provision_vm_port: "8989"
 #        provision_vm_disk:
 #        - size_gb: 10
 #          type: thin
 #          datastore: "LocalDS_0"
         provision_vm_hardware:
-          memory_mb: 4096
-#          hotadd_cpu: true
-#          num_cpus: 4
-#        provision_vm_guest_id: "rhel9_64Guest"
-        provision_vm_state: poweredon 
+          hotadd_memory: true
+          memory_mb: "{{ vm_memory_mb | default(omit) }}"
+          hotadd_cpu: true
+          num_cpus: "{{ vm_num_cpus | default(omit) }}"
 

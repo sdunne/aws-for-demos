@@ -1,5 +1,9 @@
-rhel9-cis ansible_host=ec2-3-135-145-240.us-east-2.compute.amazonaws.com
-
 [splunk]
 ec2-3-146-99-119.us-east-2.compute.amazonaws.com
+
+[vmware_bastion]
+"{{ vmware_bastion }}" ansible_ssh_user=lab-user ansible_ssh_pass="{{ vmware_bastion_pass }}"
+
+[vmware_targets]
+target1 ansible_ssh_user=sdunne ansible_ssh_pass="{{ vmware_target_pass }}" ansible_host=192.168.23.17 ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p lab-user@"{{ vmware_bastion }}""'
 
