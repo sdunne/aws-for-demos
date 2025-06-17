@@ -6,6 +6,7 @@
     - secrets.yml
 
   vars:
+    vm_name: rhel9test2
     vm_cpus: 2
     memsize_MiB: 4096
 

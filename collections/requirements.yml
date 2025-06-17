@@ -3,3 +3,4 @@ collections:
 #  - name: dynatrace.event_driven_ansible
   - name: community.general
   - name: vmware.vmware
+  - name: cloud.vmware_ops
