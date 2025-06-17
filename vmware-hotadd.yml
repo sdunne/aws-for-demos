@@ -5,6 +5,9 @@
   vars_files:
     - secrets.yml
 
+  vars:
+    vm_name: rhel9test
+
   tasks:
     - name: VMware hotadd resources
       ansible.builtin.import_role:
