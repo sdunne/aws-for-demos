@@ -1,0 +1,24 @@
+- name: Get ServiceNow Request Item
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - secrets.yml
+  
+  tasks:
+    - name: Get request item details
+      ansible.builtin.uri:
+        #url: "{{ sn_host }}/api/now/table/sc_req_item?sys_id={{ request_item_sys_id }}"
+        url: "{{ sn_host }}/api/now/table/sc_req_item?sys_id=REQ0010268"
+        method: GET
+        user: "{{ sn_user }}"
+        password: "{{ sn_password }}"
+        validate_certs: no
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+      register: request_item_response
+
+    - name: Debug request item response
+      debug:
+        var: request_item_response.json

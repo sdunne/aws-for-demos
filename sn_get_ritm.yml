@@ -1,0 +1,26 @@
+- name: Get ServiceNow RITM
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Retrieve RITM details
+      servicenow.itsm.api_info:
+        resource: sc_req_item 
+        #resource: sc_request
+        #table: "sc_req_item"
+        #sys_id: "YOUR_RITM_SYS_ID"  # Replace with the actual sys_id of the RITM
+        #sys_id: RITM0010282
+        sysparm_query: number=RITM0010282
+        #sysparm_query: number=REQ0010268
+        instance:
+          host: "{{ sn_host }}"
+          password: "{{ sn_password }}"
+          username: "{{ sn_user }}"
+      register: ritm_details
+
+    - name: Print RITM details
+      debug:
+        var: ritm_details

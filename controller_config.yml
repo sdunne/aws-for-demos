@@ -206,5 +206,5 @@
       #  - "ec2 instance"
       #  - "2nd credential"
       #ask_limit_on_launch: true
-      #ask_variables_on_launch: true
+      ask_variables_on_launch: true
       state: present
