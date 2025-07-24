@@ -1,0 +1,27 @@
+- name: Create Jira incident
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Create an issue
+      community.general.jira:
+        uri: '{{ jira_server }}'
+        username: '{{ jira_user }}'
+        password: '{{ jira_pass }}'
+        project: SUP
+        operation: create
+        summary: Example incident
+        description: Created using Ansible
+        issuetype: "[System] Incident"
+#      args:
+#        fields:
+#          customfield_13225: "test"
+#          customfield_12931: {"value": "Test"}
+      register: issue
+
+    - name: Show issue data
+      ansible.builtin.debug:
+        var: issue
+
