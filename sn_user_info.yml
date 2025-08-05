@@ -1,0 +1,32 @@
+---
+- name: Pull and show SNOW user info
+  hosts: localhost
+
+  vars_files:
+    - secrets.yml
+
+  vars:
+    snow_username: sdunne
+
+#  module_defaults:
+#    servicenow.itsm.api:
+#      instance:
+#        host: "{{ sn_host }}"
+#        username: "{{ sn_user }}"
+#        password: "{{ sn_password }}"
+
+  tasks:
+    - name: Pull user info from SNOW API
+      servicenow.itsm.api_info:
+        resource: sys_user
+        instance:
+          host: "{{ sn_host }}"
+          username: "{{ sn_user }}"
+          password: "{{ sn_password }}"
+        sysparm_query: user_nameSTARTSWITH{{ snow_username }}
+      register: user_data
+
+    - name: Show user info
+      ansible.builtin.debug:
+        var: user_data
+

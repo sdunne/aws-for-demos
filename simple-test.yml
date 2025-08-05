@@ -1,6 +1,6 @@
 ---
 - name: Simple Ansible ping test
-  hosts: all
+  hosts: "{{ _hosts }}"
   gather_facts: false
 
   vars_files:
