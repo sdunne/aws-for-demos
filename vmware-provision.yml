@@ -41,4 +41,17 @@
       debug:
         var: ticket_number
 
+    - name: Close ServiceNow Request
+      servicenow.itsm.api:
+        resource: sc_req_item
+        action: patch
+        sys_id: "{{ ticket_number }}"
+        # table: sc_request
+        data:
+          state: "Closed Complete"  # Or the appropriate closed state value
+      register: request_update
 
+    - name: Debug ServiceNow Request Update
+      debug:
+        var: request_update
+        verbosity: 2
