@@ -5,12 +5,13 @@
   vars_files:
     - secrets.yml
 
-  module_defaults:
-    servicenow.itsm.incident:
-      instance:
-        host: "{{ sn_host }}"
-        username: "{{ sn_user }}"
-        password: "{{ sn_password }}"
+# uncomment section for testing with ansible-navigator
+#  module_defaults:
+#    servicenow.itsm.incident:
+#      instance:
+#        host: "{{ sn_host }}"
+#        username: "{{ sn_user }}"
+#        password: "{{ sn_password }}"
 
   tasks:
     - name: Create incident
