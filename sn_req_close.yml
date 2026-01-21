@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  gather_facts: true
+
+  vars_files:
+    - secrets.yml
+
+# uncomment section for testing with ansible-navigator
+#  vars:
+#    ticket_number: REQ0010305
+
+#  module_defaults:
+#    servicenow.itsm.api:
+#      instance:
+#        host: "{{ sn_host }}"
+#        username: "{{ sn_user }}"
+#        password: "{{ sn_password }}"
+
+  tasks:
+    - name: Update catalog request
+      servicenow.itsm.catalog_request:
+#        instance:
+#          host: "{{ sn_host }}"
+#          username: "{{ sn_user }}"
+#          password: "{{ sn_password }}"
+        state: present
+        number: "{{ ticket_number }}"
+        request_state: closed_complete
+        #assignment_group: IT Support
+        #work_notes: Started processing the request
+      register: request_update
+
+    - name: Debug ServiceNow Request Update
+      ansible.builtin.debug:
+        var: request_update
+#        verbosity: 2
