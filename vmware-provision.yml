@@ -41,17 +41,20 @@
       debug:
         var: ticket_number
 
-    - name: Close ServiceNow Request
-      servicenow.itsm.api:
-        resource: sc_req_item
-        action: patch
-        sys_id: "{{ ticket_number }}"
-        # table: sc_request
-        data:
-          state: "Closed Complete"  # Or the appropriate closed state value
+    - name: Update (close) catalog request
+      servicenow.itsm.catalog_request:
+#        instance:
+#          host: "{{ sn_host }}"
+#          username: "{{ sn_user }}"
+#          password: "{{ sn_password }}"
+        state: present
+        number: "{{ ticket_number }}"
+        request_state: "{{ req_state | default('closed_complete') }}"
+        #assignment_group: IT Support
+        #work_notes: Started processing the request
       register: request_update
 
     - name: Debug ServiceNow Request Update
-      debug:
+      ansible.builtin.debug:
         var: request_update
-        verbosity: 2
+#        verbosity: 2
