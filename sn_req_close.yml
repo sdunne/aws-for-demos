@@ -8,6 +8,7 @@
 # uncomment section for testing with ansible-navigator
 #  vars:
 #    ticket_number: REQ0010305
+#    req_state: closed_complete
 
 #  module_defaults:
 #    servicenow.itsm.api:
@@ -25,7 +26,7 @@
 #          password: "{{ sn_password }}"
         state: present
         number: "{{ ticket_number }}"
-        request_state: closed_complete
+        request_state: {{ req_state | default('approved') }}
         #assignment_group: IT Support
         #work_notes: Started processing the request
       register: request_update
