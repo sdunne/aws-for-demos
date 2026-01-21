@@ -4,3 +4,6 @@ collections:
   - name: community.general
   - name: vmware.vmware
   - name: cloud.vmware_ops
+  - name: servicenow.itsm
+
+...
