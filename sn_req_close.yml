@@ -26,7 +26,7 @@
 #          password: "{{ sn_password }}"
         state: present
         number: "{{ ticket_number }}"
-        request_state: {{ req_state | default('approved') }}
+        request_state: "{{ req_state | default('approved') }}"
         #assignment_group: IT Support
         #work_notes: Started processing the request
       register: request_update
