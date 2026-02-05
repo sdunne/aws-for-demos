@@ -10,3 +10,11 @@
     - name: Ansible ping
       ansible.builtin.ping:
 
+    - name: Ansible gather facts
+      ansible.builtin.setup:
+      register: facts
+
+    - name: Show facts
+      ansible.builtin.debug:
+        var: facts
+
