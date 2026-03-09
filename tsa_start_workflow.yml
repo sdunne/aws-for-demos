@@ -1,0 +1,14 @@
+---
+- name: Run an scap scan on a host
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set host variable for "Install IIS" playbook
+      ansible.builtin.set_fact:
+        _hosts: "{{ create_vm_vm_name }}"
+
+    - name: Set host variable for "DISA STIG" playbook
+      ansible.builtin.set_fact:
+        HOSTS: "{{ create_vm_vm_name }}"
+
