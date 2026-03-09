@@ -1,6 +1,6 @@
 ---
 - name: Run an scap scan on a host
-  hosts: all
+  hosts: localhost
 #  become: true
 
   tasks:
