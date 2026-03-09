@@ -2,6 +2,9 @@
 - name: Run an scap scan on a host
   hosts: localhost
 #  become: true
+#
+  vars:
+    create_vm_vm_name: testfromplaybook
 
   tasks:
     - name: Set host variable for "Install IIS" playbook
